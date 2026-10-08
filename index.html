@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NexaView</title>
+<meta name="theme-color" content="#070b16">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NexaView">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+
+<style>
+:root{--bg1:#070b16;--bg2:#101a33;--ink:#eef3ff;--mute:#b8c4e0;--glass:rgba(255,255,255,.07);--solid:#1a2340;--card:rgba(5,9,20,.84);--edge:rgba(255,255,255,.16);--acc:#4cc2ff;--blur:22px;--r:22px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg1:#dfe8f8;--bg2:#f4f7fd;--ink:#101828;--mute:#36435f;--glass:rgba(255,255,255,.55);--solid:#f3f7ff;--card:rgba(255,255,255,.93);--edge:rgba(16,24,40,.14)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:-apple-system,"SF Pro Display","Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);background:radial-gradient(900px 600px at 15% 10%,color-mix(in srgb,var(--acc) 28%,transparent),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(140,90,255,.22),transparent 60%),linear-gradient(160deg,var(--bg1),var(--bg2));background-attachment:fixed;overflow-x:hidden}
+.glass{background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(160%);-webkit-backdrop-filter:blur(var(--blur)) saturate(160%);border:1px solid var(--edge);border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.22)}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--edge);background:var(--glass);border-radius:16px;min-height:50px;padding:0 22px;font-weight:600;transition:transform calc(.12s*var(--k,1)),filter calc(.12s*var(--k,1)),background calc(.2s*var(--k,1));touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:active{transform:scale(.96) translateY(1px);filter:brightness(.8)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.primary{background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 92%,#fff),var(--acc));color:#04121f;border-color:transparent}
+button.link{background:none;border:none;min-height:36px;padding:0 4px;color:var(--acc)}
+.hidden{display:none!important}
+#auth{min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{width:min(440px,100%);padding:36px 30px;text-align:center}
+.logo{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;background:linear-gradient(135deg,var(--acc),#8a5cff);display:grid;place-items:center;font-size:30px;font-weight:800;color:#fff;box-shadow:0 10px 30px color-mix(in srgb,var(--acc) 50%,transparent)}
+h1{margin:0 0 6px;font-size:34px;letter-spacing:-.02em}
+p.sub{margin:0 0 24px;color:var(--mute)}
+.stack{display:grid;gap:12px}
+input[type=text],input[type=password],input[type=email]{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--edge);background:rgba(0,0,0,.18);color:var(--ink);padding:0 16px;font:inherit}
+.msg{min-height:20px;margin:10px 0 0;color:#ff9aa8;font-size:14px}
+#dash{padding:20px;max-width:1200px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.top h2{margin:0;font-size:28px;letter-spacing:-.02em}
+.badge{display:inline-block;margin-top:4px;padding:3px 10px;border-radius:99px;font-size:12px;border:1px solid var(--edge);color:var(--mute)}
+#dash{zoom:var(--scale,1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--min,260px),1fr));gap:16px}
+@keyframes pop{from{transform:translateY(10px) scale(.97)}}
+.w{animation:pop var(--dur,.35s) both}
+button:disabled{color:var(--mute);border-style:dashed;cursor:default}
+h3.sec{margin:18px 0 0;font-size:15px;color:var(--mute)}
+.w{padding:18px}
+.w.glass{background:color-mix(in srgb,var(--card) calc(var(--wt,100)*1%),transparent);-webkit-backdrop-filter:blur(calc(var(--blur)*var(--wt,100)/100)) saturate(160%);backdrop-filter:blur(calc(var(--blur)*var(--wt,100)/100)) saturate(160%);box-shadow:0 18px 50px color-mix(in srgb,rgba(0,0,0,.32) calc(var(--wt,100)*1%),transparent),inset 0 1px 0 color-mix(in srgb,rgba(255,255,255,.28) calc(var(--wt,100)*1%),transparent)}
+.w h3{margin:0 0 4px;font-size:15px;color:var(--mute);font-weight:600}
+.big{font-size:34px;font-weight:700;letter-spacing:-.02em}
+.det{font-size:13px;color:var(--mute);margin-top:2px}
+canvas{width:100%;height:90px;display:block;margin-top:10px}
+#modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);padding:18px;z-index:10}
+.panel{width:min(520px,100%);max-height:88vh;overflow:auto;padding:24px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--edge)}
+.row label{font-weight:600}
+.sw{display:flex;gap:8px}
+.sw button{min-height:36px;width:36px;padding:0;border-radius:50%}
+.sw button[aria-pressed=true]{outline:3px solid var(--ink);outline-offset:2px}
+select{min-height:44px;border-radius:12px;border:1px solid var(--edge);background:rgba(0,0,0,.25);color:var(--ink);padding:0 10px;font:inherit}
+input[type=range]{width:150px}
+.tg{width:56px;padding:0 4px;min-height:32px;border-radius:99px;display:flex;align-items:center}
+.tg::after{content:"";width:24px;height:24px;border-radius:50%;background:#fff;transition:margin calc(.2s*var(--k,1))}
+.tg[aria-checked=true]::after{margin-left:24px}
+.tg[aria-checked=true]{background:var(--acc)}
+.head{display:flex;justify-content:space-between;align-items:center}
+.head h2{margin:0}
+.x{width:44px;padding:0;min-height:44px;border-radius:50%;font-size:18px}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
+</style>
+</head>
+<body>
+<section id="langScreen" class="hidden" style="min-height:100vh;display:grid;place-items:center;padding:24px">
+  <div class="glass card">
+    <div class="logo">N</div>
+    <h1>NexaView</h1>
+    <p class="sub">Choose your language · Chọn ngôn ngữ · 选择语言</p>
+    <div class="stack">
+      <button class="primary" data-lang="en">English</button>
+      <button data-lang="vi">Tiếng Việt</button>
+      <button data-lang="zh">中文</button>
+    </div>
+  </div>
+</section>
+<section id="auth" class="hidden">
+  <div class="glass card">
+    <div class="logo">N</div>
+    <h1>NexaView</h1>
+    <div id="authHome">
+      <p class="sub" data-i18n="welcome">Welcome to NexaView</p>
+      <div class="stack">
+        <button class="primary" id="btnSignIn" data-i18n="signin">Sign in</button>
+        <button id="btnCreate" data-i18n="create">Create account</button>
+        <button id="btnGuest" data-i18n="guestbtn">Continue as Guest</button>
+      </div>
+      <p class="sub" style="margin:20px 0 0"><span data-i18n="noacct">Don’t have an account?</span> <button class="link" id="btnSignUp" data-i18n="signup">Sign up</button></p>
+      <p class="sub" style="margin:6px 0 0"><button class="link" id="btnLangAuth" data-i18n-aria="chgLang">🌐 <span id="curLang"></span></button></p>
+    </div>
+    <form id="authForm" class="hidden" novalidate>
+      <p class="sub" id="formTitle">Sign in</p>
+      <div class="stack">
+        <input type="text" id="fName" placeholder="Your name" data-i18n-ph="phName" autocomplete="name">
+        <input type="email" id="fEmail" placeholder="Email" data-i18n-ph="phEmail" autocomplete="email">
+        <input type="password" id="fPass" placeholder="Password" data-i18n-ph="phPass" autocomplete="current-password">
+        <button class="primary" type="submit" id="btnSubmit">Continue</button>
+        <button type="button" id="btnBack" data-i18n="back">Back</button>
+      </div>
+      <p class="msg" id="formMsg" role="alert"></p>
+    </form>
+  </div>
+</section>
+
+<main id="dash" class="hidden">
+  <div class="top">
+    <div><h2 id="greet">Good morning, Guest!</h2><span class="badge" id="mode">Guest · settings stored on this device</span> <span class="badge" data-i18n="demo">Demo data</span></div>
+    <div style="display:flex;gap:10px"><button id="btnSettings" data-i18n="settings">Settings</button><button id="btnOut" data-i18n="signout">Sign out</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div id="modal" class="hidden">
+  <div class="glass panel" role="dialog" aria-modal="true" aria-label="Settings" data-i18n-aria="settings">
+    <div class="head"><h2 data-i18n="settings">Settings</h2><button class="x" id="btnClose" aria-label="Close settings" data-i18n-aria="closeSet">✕</button></div>
+    <div class="row"><label data-i18n="theme">Theme</label><select id="sTheme"><option value="dark" data-i18n="dark">Dark</option><option value="light" data-i18n="light">Light</option></select></div>
+    <div class="row"><label data-i18n="accent">Accent color</label><div class="sw" id="sAcc"></div></div>
+    <div class="row"><label data-i18n="blur">Glass blur</label><input type="range" id="sBlur" min="0" max="40" value="22"></div>
+    <div class="row"><label data-i18n="wtrans">Widget transparency</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="sWt" min="0" max="100" step="5" value="100"><span id="wtVal" style="min-width:68px;text-align:right">100%</span></div></div>
+    <div class="row"><label data-i18n="radius">Corner radius</label><input type="range" id="sRad" min="6" max="36" value="22"></div>
+    <div class="row"><label data-i18n="chart">Chart style</label><select id="sChart"><option value="Line" data-i18n="Line">Line</option><option value="Bar" data-i18n="Bar">Bar</option><option value="Area" data-i18n="Area">Area</option><option value="Scatter" data-i18n="Scatter">Scatter</option><option value="Pie" data-i18n="Pie">Pie</option></select></div>
+    <div class="row"><label data-i18n="interval">Update interval</label><select id="sInt"><option value="1000">1 s</option><option value="2000">2 s</option><option value="5000">5 s</option></select></div>
+    <div class="row"><label data-i18n="layout">Card layout</label><select id="sLay"><option value="Compact" data-i18n="Compact">Compact</option><option value="Comfortable" data-i18n="Comfortable">Comfortable</option><option value="Large" data-i18n="Large">Large</option></select></div>
+    <div class="row"><label data-i18n="scale">UI scale</label><input type="range" id="sScale" min="80" max="130" step="5" value="100"></div>
+    <div class="row"><label data-i18n="anim">Animations</label><select id="sAnim"><option value="Full" data-i18n="Full">Full</option><option value="Reduced" data-i18n="Reduced">Reduced</option><option value="Off" data-i18n="Off">Off</option></select></div>
+    <div class="row"><label data-i18n="hist">Graph history</label><select id="sHist"><option value="20" data-pts>20</option><option value="40" data-pts>40</option><option value="80" data-pts>80</option></select></div>
+    <div class="row"><label data-i18n="language">Language</label><select id="sLang"><option value="en">English</option><option value="vi">Tiếng Việt</option><option value="zh">中文</option></select></div>
+    <h3 class="sec" data-i18n="widgets">Widgets</h3><div id="wlist"></div>
+    <div class="row"><label data-i18n="reset">Reset dashboard</label><button id="btnReset" data-i18n="resetBtn">Reset</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var COLORS=["#4cc2ff","#8a5cff","#34d399","#fb7185","#fbbf24"];
+var T={"en": {"welcome": "Welcome to NexaView", "signin": "Sign in", "create": "Create account", "guestbtn": "Continue as Guest", "noacct": "Don’t have an account?", "signup": "Sign up", "phName": "Your name", "phEmail": "Email", "phPass": "Password", "back": "Back", "errName": "Enter your name.", "errEmail": "Enter a valid email address.", "errPass": "Password must be at least 6 characters.", "gm": "Good morning, {n}!", "ga": "Good afternoon, {n}!", "ge": "Good evening, {n}!", "guest": "Guest", "modeGuest": "Guest · settings stored on this device", "modeUser": "Signed in · layout and theme can sync (hardware data stays local)", "demo": "Demo data", "settings": "Settings", "signout": "Sign out", "closeSet": "Close settings", "theme": "Theme", "dark": "Dark", "light": "Light", "accent": "Accent color", "blur": "Glass blur", "radius": "Corner radius", "chart": "Chart style", "Line": "Line", "Bar": "Bar", "Area": "Area", "Scatter": "Scatter", "Pie": "Pie", "interval": "Update interval", "layout": "Card layout", "Compact": "Compact", "Comfortable": "Comfortable", "Large": "Large", "scale": "UI scale", "anim": "Animations", "Full": "Full", "Reduced": "Reduced", "Off": "Off", "hist": "Graph history", "pts": "{n} points", "language": "Language", "widgets": "Widgets", "reset": "Reset dashboard", "resetBtn": "Reset", "n_cpu": "CPU", "n_gpu": "GPU", "n_ram": "RAM", "n_net": "Network", "n_disk": "Storage", "n_bat": "Battery", "n_fan": "Fan RPM", "unavail": "Unavailable", "threads": "{n} logical threads (reported by browser)", "threadsNA": "Threads: Unavailable", "tempNA": "temp: Unavailable", "gpuNote": "Temp, VRAM: Unavailable in a browser", "ramNote": "Browser memory API: {v}", "approx": "{n} GB (approx.)", "conn": "Connection type: {v}", "diskNote": "Demo value · drive details Unavailable", "batNA": "Battery API not supported in this browser", "charging": "Charging", "onbat": "On battery", "fanNote": "Browsers cannot read fan speed", "empty": "No widgets shown. Turn some on in Settings.", "moveUp": "Move {w} up", "moveDown": "Move {w} down", "showW": "Show {w}", "chgLang": "Change language", "wtrans": "Widget transparency", "minimum": "Minimum"}, "vi": {"welcome": "Chào mừng đến với NexaView", "signin": "Đăng nhập", "create": "Tạo tài khoản", "guestbtn": "Tiếp tục với tư cách Khách", "noacct": "Chưa có tài khoản?", "signup": "Đăng ký", "phName": "Tên của bạn", "phEmail": "Email", "phPass": "Mật khẩu", "back": "Quay lại", "errName": "Nhập tên của bạn.", "errEmail": "Nhập địa chỉ email hợp lệ.", "errPass": "Mật khẩu phải có ít nhất 6 ký tự.", "gm": "Chào buổi sáng, {n}!", "ga": "Chào buổi chiều, {n}!", "ge": "Chào buổi tối, {n}!", "guest": "Khách", "modeGuest": "Khách · cài đặt lưu trên thiết bị này", "modeUser": "Đã đăng nhập · bố cục và giao diện có thể đồng bộ (dữ liệu phần cứng vẫn ở trên máy)", "demo": "Dữ liệu minh họa", "settings": "Cài đặt", "signout": "Đăng xuất", "closeSet": "Đóng cài đặt", "theme": "Giao diện", "dark": "Tối", "light": "Sáng", "accent": "Màu nhấn", "blur": "Độ mờ kính", "radius": "Bo góc", "chart": "Kiểu biểu đồ", "Line": "Đường", "Bar": "Cột", "Area": "Vùng", "Scatter": "Phân tán", "Pie": "Tròn", "interval": "Tần suất cập nhật", "layout": "Bố cục thẻ", "Compact": "Gọn", "Comfortable": "Vừa", "Large": "Lớn", "scale": "Tỷ lệ giao diện", "anim": "Hiệu ứng", "Full": "Đầy đủ", "Reduced": "Giảm", "Off": "Tắt", "hist": "Lịch sử biểu đồ", "pts": "{n} điểm", "language": "Ngôn ngữ", "widgets": "Tiện ích", "reset": "Đặt lại bảng điều khiển", "resetBtn": "Đặt lại", "n_cpu": "CPU", "n_gpu": "GPU", "n_ram": "RAM", "n_net": "Mạng", "n_disk": "Lưu trữ", "n_bat": "Pin", "n_fan": "Tốc độ quạt (RPM)", "unavail": "Không khả dụng", "threads": "{n} luồng logic (do trình duyệt báo)", "threadsNA": "Luồng: Không khả dụng", "tempNA": "nhiệt độ: Không khả dụng", "gpuNote": "Nhiệt độ, VRAM: không khả dụng trong trình duyệt", "ramNote": "API bộ nhớ của trình duyệt: {v}", "approx": "{n} GB (xấp xỉ)", "conn": "Loại kết nối: {v}", "diskNote": "Giá trị minh họa · chi tiết ổ đĩa không khả dụng", "batNA": "Trình duyệt này không hỗ trợ API pin", "charging": "Đang sạc", "onbat": "Đang dùng pin", "fanNote": "Trình duyệt không đọc được tốc độ quạt", "empty": "Không có tiện ích nào. Hãy bật trong Cài đặt.", "moveUp": "Di chuyển {w} lên", "moveDown": "Di chuyển {w} xuống", "showW": "Hiện {w}", "chgLang": "Đổi ngôn ngữ", "wtrans": "Độ trong suốt của tiện ích", "minimum": "Tối thiểu"}, "zh": {"welcome": "欢迎使用 NexaView", "signin": "登录", "create": "创建账户", "guestbtn": "以访客身份继续", "noacct": "还没有账户？", "signup": "注册", "phName": "你的姓名", "phEmail": "电子邮件", "phPass": "密码", "back": "返回", "errName": "请输入姓名。", "errEmail": "请输入有效的电子邮件地址。", "errPass": "密码至少需要 6 个字符。", "gm": "早上好，{n}！", "ga": "下午好，{n}！", "ge": "晚上好，{n}！", "guest": "访客", "modeGuest": "访客 · 设置保存在此设备上", "modeUser": "已登录 · 布局和主题可同步（硬件数据保留在本地）", "demo": "演示数据", "settings": "设置", "signout": "退出登录", "closeSet": "关闭设置", "theme": "主题", "dark": "深色", "light": "浅色", "accent": "强调色", "blur": "玻璃模糊", "radius": "圆角", "chart": "图表样式", "Line": "折线", "Bar": "柱状", "Area": "面积", "Scatter": "散点", "Pie": "饼图", "interval": "更新间隔", "layout": "卡片布局", "Compact": "紧凑", "Comfortable": "舒适", "Large": "宽大", "scale": "界面缩放", "anim": "动画", "Full": "完整", "Reduced": "减弱", "Off": "关闭", "hist": "图表历史", "pts": "{n} 个点", "language": "语言", "widgets": "小部件", "reset": "重置仪表盘", "resetBtn": "重置", "n_cpu": "CPU", "n_gpu": "GPU", "n_ram": "RAM", "n_net": "网络", "n_disk": "存储", "n_bat": "电池", "n_fan": "风扇转速 (RPM)", "unavail": "不可用", "threads": "{n} 个逻辑线程（由浏览器报告）", "threadsNA": "线程：不可用", "tempNA": "温度：不可用", "gpuNote": "温度、显存：浏览器中不可用", "ramNote": "浏览器内存 API：{v}", "approx": "{n} GB（约）", "conn": "连接类型：{v}", "diskNote": "演示值 · 驱动器详情不可用", "batNA": "此浏览器不支持电池 API", "charging": "充电中", "onbat": "使用电池", "fanNote": "浏览器无法读取风扇转速", "empty": "没有显示任何小部件。请在设置中开启。", "moveUp": "上移 {w}", "moveDown": "下移 {w}", "showW": "显示 {w}", "chgLang": "更改语言", "wtrans": "小部件透明度", "minimum": "最低"}};
+var LN={en:"English",vi:"Tiếng Việt",zh:"中文"},lang=null,user=null,isGuest=true;
+function t(k,o){var v=(T[lang||"en"]||T.en)[k];if(v==null)v=T.en[k];if(o)for(var x in o)v=v.replace("{"+x+"}",o[x]);return v}
+function nm(id){return t("n_"+id)}
+function loadLang(){try{lang=localStorage.getItem("nexaview.lang")}catch(e){}if(!T[lang])lang=null}
+function setLang(l){lang=l;try{localStorage.setItem("nexaview.lang",l)}catch(e){}applyLang()}
+function applyLang(){document.documentElement.lang=lang||"en";
+ Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"),function(e){e.textContent=t(e.dataset.i18n)});
+ Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-ph]"),function(e){e.placeholder=t(e.dataset.i18nPh)});
+ Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-aria]"),function(e){e.setAttribute("aria-label",t(e.dataset.i18nAria))});
+ Array.prototype.forEach.call(document.querySelectorAll("option[data-pts]"),function(o){o.textContent=t("pts",{n:o.value})});
+ $("curLang").textContent=LN[lang||"en"];$("sLang").value=lang||"en";formLabels();wtLabel();list();
+ if(user!==null){setGreet();build()}}
+var NAMES={cpu:"CPU",gpu:"GPU",ram:"RAM",net:"Network",disk:"Storage",bat:"Battery",fan:"Fan RPM"};
+var DEF={theme:"dark",acc:COLORS[0],blur:22,rad:22,chart:"Line",interval:2000,layout:"Comfortable",scale:100,anim:"Full",hist:40,wt:100,order:Object.keys(NAMES),hidden:{fan:true}};
+function clone(){return JSON.parse(JSON.stringify(DEF))}
+var S=clone(), mode="login", hist={}, timer=null;
+function load(){try{var r=localStorage.getItem("nexaview.settings");if(r)S=Object.assign(clone(),JSON.parse(r))}catch(e){}
+ if(!Array.isArray(S.order))S.order=DEF.order.slice();S.order=S.order.filter(function(i){return NAMES[i]});Object.keys(NAMES).forEach(function(i){if(S.order.indexOf(i)<0)S.order.push(i)});if(!S.hidden||typeof S.hidden!=="object")S.hidden={}}
+function save(){try{localStorage.setItem("nexaview.settings",JSON.stringify(S))}catch(e){}}
+function wtLabel(){$("wtVal").textContent=S.wt===0?t("minimum"):S.wt+"%"}
+function apply(){var r=document.documentElement;r.setAttribute("data-theme",S.theme);r.style.setProperty("--acc",S.acc);r.style.setProperty("--blur",S.blur+"px");r.style.setProperty("--r",S.rad+"px");
+ var k={Off:0,Reduced:.5,Full:1}[S.anim];r.style.setProperty("--k",k);r.style.setProperty("--dur",(.35*k)+"s");r.style.setProperty("--min",{Compact:200,Comfortable:260,Large:360}[S.layout]+"px");r.style.setProperty("--scale",S.scale/100);r.style.setProperty("--wt",S.wt);$("sWt").value=S.wt;wtLabel();
+ $("sLay").value=S.layout;$("sScale").value=S.scale;$("sAnim").value=S.anim;$("sHist").value=String(S.hist);list();
+ $("sTheme").value=S.theme;$("sBlur").value=S.blur;$("sRad").value=S.rad;$("sChart").value=S.chart;$("sInt").value=String(S.interval);
+ Array.prototype.forEach.call($("sAcc").children,function(b){b.setAttribute("aria-pressed",b.dataset.c===S.acc)});}
+function show(el,on){el.classList.toggle("hidden",!on)}
+function setGreet(){var h=new Date().getHours();$("greet").textContent=t(h<12?"gm":h<18?"ga":"ge",{n:isGuest?t("guest"):user});$("mode").textContent=t(isGuest?"modeGuest":"modeUser")}
+function enter(name,guest){user=name;isGuest=guest;setGreet();show($("auth"),false);show($("dash"),true);build();start()}
+function leave(){stop();user=null;show($("dash"),false);show($("modal"),false);show($("auth"),true);showHome()}
+function showHome(){show($("authHome"),true);show($("authForm"),false)}
+function formLabels(){var c=mode==="create";$("formTitle").textContent=t(c?"create":"signin");$("btnSubmit").textContent=t(c?"create":"signin");$("fName").classList.toggle("hidden",!c)}
+function showForm(m){mode=m;formLabels();$("formMsg").textContent="";show($("authHome"),false);show($("authForm"),true)}
+$("btnSignIn").addEventListener("click",function(){showForm("login")});
+$("btnCreate").addEventListener("click",function(){showForm("create")});
+$("btnSignUp").addEventListener("click",function(){showForm("create")});
+$("btnBack").addEventListener("click",showHome);
+$("btnGuest").addEventListener("click",function(){enter("Guest",true)});
+$("authForm").addEventListener("submit",function(e){e.preventDefault();var n=$("fName").value.trim(),em=$("fEmail").value.trim(),p=$("fPass").value;
+ if(mode==="create"&&!n){$("formMsg").textContent=t("errName");return}
+ if(!/^\S+@\S+\.\S+$/.test(em)){$("formMsg").textContent=t("errEmail");return}
+ if(p.length<6){$("formMsg").textContent=t("errPass");return}
+ enter(n||em.split("@")[0],false)});
+$("btnOut").addEventListener("click",leave);
+$("btnSettings").addEventListener("click",function(){show($("modal"),true)});
+$("btnClose").addEventListener("click",function(){show($("modal"),false)});
+$("modal").addEventListener("click",function(e){if(e.target===$("modal"))show($("modal"),false)});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")show($("modal"),false)});
+COLORS.forEach(function(c){var b=document.createElement("button");b.dataset.c=c;b.style.background=c;b.setAttribute("aria-label","Accent "+c);b.addEventListener("click",function(){S.acc=c;save();apply();draw()});$("sAcc").appendChild(b)});
+$("sTheme").addEventListener("change",function(){S.theme=this.value;save();apply();draw()});
+$("sBlur").addEventListener("input",function(){S.blur=+this.value;save();apply()});
+$("sRad").addEventListener("input",function(){S.rad=+this.value;save();apply()});
+$("sChart").addEventListener("change",function(){S.chart=this.value;save();draw()});
+$("sInt").addEventListener("change",function(){S.interval=+this.value;save();start()});
+$("sWt").addEventListener("input",function(){S.wt=+this.value;save();apply()});
+$("sLay").addEventListener("change",function(){S.layout=this.value;save();apply()});
+$("sScale").addEventListener("input",function(){S.scale=+this.value;save();apply()});
+$("sAnim").addEventListener("change",function(){S.anim=this.value;save();apply()});
+$("sHist").addEventListener("change",function(){S.hist=+this.value;save();hist={};build()});
+$("btnReset").addEventListener("click",function(){S=clone();save();apply();hist={};build()});
+Array.prototype.forEach.call(document.querySelectorAll("[data-lang]"),function(b){b.addEventListener("click",function(){setLang(b.dataset.lang);show($("langScreen"),false);show($("auth"),true)})});
+$("btnLangAuth").addEventListener("click",function(){show($("auth"),false);show($("langScreen"),true)});
+$("sLang").addEventListener("change",function(){setLang(this.value)});
+function move(id,d){var i=S.order.indexOf(id),j=i+d;if(j<0||j>=S.order.length)return;S.order.splice(i,1);S.order.splice(j,0,id);save();list();build()}
+function list(){var el=$("wlist");el.innerHTML="";S.order.forEach(function(id,i){var on=!S.hidden[id],r=document.createElement("div");r.className="row";r.id="wl-"+id;
+ r.innerHTML='<label>'+nm(id)+'</label><div style="display:flex;gap:8px;align-items:center"><button class="x" id="up-'+id+'" aria-label="'+t("moveUp",{w:nm(id)})+'">▲</button><button class="x" id="dn-'+id+'" aria-label="'+t("moveDown",{w:nm(id)})+'">▼</button><button class="tg" id="tg-'+id+'" role="switch" aria-checked="'+on+'" aria-label="'+t("showW",{w:nm(id)})+'"></button></div>';
+ el.appendChild(r);var u=$("up-"+id),d=$("dn-"+id);u.disabled=i===0;d.disabled=i===S.order.length-1;
+ u.addEventListener("click",function(){move(id,-1)});d.addEventListener("click",function(){move(id,1)});
+ $("tg-"+id).addEventListener("click",function(){if(S.hidden[id])delete S.hidden[id];else S.hidden[id]=true;save();list();build()})})}
+
+var W=[["cpu","CPU","%"],["gpu","GPU","%"],["ram","RAM","%"],["net","Network","MB/s"],["disk","Storage","%"]];
+function cores(){return navigator.hardwareConcurrency?t("threads",{n:navigator.hardwareConcurrency}):t("threadsNA")}
+function build(){var g=$("grid");g.innerHTML="";seed();S.order.forEach(function(id){if(!S.hidden[id])card(g,id,nm(id))});
+ if(!g.children.length)g.innerHTML='<div class="glass w" id="empty">'+t("empty")+'</div>';render();bat()}
+function card(g,id,title){var d=document.createElement("div");d.className="glass w";d.id="w-"+id;
+ d.innerHTML='<h3>'+title+'</h3><div class="big" id="v-'+id+'">…</div><div class="det" id="d-'+id+'"></div>'+(id==="bat"||id==="fan"?'':'<canvas id="c-'+id+'" width="400" height="140"></canvas>');g.appendChild(d)}
+function seed(){if(hist.cpu)return;for(var i=0;i<S.hist;i++){step("cpu",8,85);step("gpu",4,70);step("ram",35,75);step("net",0,12)}hist.disk=[];for(i=0;i<S.hist;i++)hist.disk.push(58)}
+function L(k){var a=hist[k];return a[a.length-1]}
+function step(k,lo,hi){var a=hist[k]||(hist[k]=[]);var last=a.length?a[a.length-1]:(lo+hi)/2;var v=Math.max(lo,Math.min(hi,last+(Math.random()-.5)*(hi-lo)*.25));a.push(v);while(a.length>S.hist)a.shift();return v}
+function tick(){seed();step("cpu",8,85);step("gpu",4,70);step("ram",35,75);step("net",0,12);render()}
+function render(){set("cpu",L("cpu").toFixed(0)+"%",cores()+" · "+t("tempNA"));set("gpu",L("gpu").toFixed(0)+"%",t("gpuNote"));set("ram",L("ram").toFixed(0)+"%",t("ramNote",{v:navigator.deviceMemory?t("approx",{n:navigator.deviceMemory}):t("unavail")}));
+ set("net",L("net").toFixed(1)+" MB/s",t("conn",{v:(navigator.connection&&navigator.connection.effectiveType)||t("unavail")}));set("disk","58%",t("diskNote"));draw()}
+function set(id,v,d){var a=$("v-"+id),b=$("d-"+id);if(a)a.textContent=v;if(b)b.textContent=d}
+function bat(){var v=$("v-bat"),d=$("d-bat");if(!v)return;if(navigator.getBattery){navigator.getBattery().then(function(b){v.textContent=Math.round(b.level*100)+"%";d.textContent=t(b.charging?"charging":"onbat")}).catch(function(){v.textContent=t("unavail");d.textContent=""})}else{v.textContent=t("unavail");d.textContent=t("batNA")}
+ var f=$("v-fan");if(f){f.textContent=t("unavail");$("d-fan").textContent=t("fanNote")}}
+function draw(){W.forEach(function(w){var cv=$("c-"+w[0]);if(!cv)return;var x=cv.getContext("2d"),Wd=cv.width,H=cv.height,a=(hist[w[0]]||[]).slice(-S.hist);x.clearRect(0,0,Wd,H);if(a.length<1)return;
+ var acc=getComputedStyle(document.documentElement).getPropertyValue("--acc").trim(),mx=w[0]==="net"?12:100,n=S.hist,sx=Wd/(n-1),off=n-a.length;
+ var P=a.map(function(v,i){return[(i+off)*sx,H-6-(v/mx)*(H-12)]});x.fillStyle=acc;x.strokeStyle=acc;x.lineWidth=3;x.lineJoin="round";
+ if(S.chart==="Pie"){var v=a[a.length-1]/mx,cx=Wd/2,cy=H/2,R=H/2-6;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,R,-Math.PI/2,-Math.PI/2+v*2*Math.PI);x.fill();x.globalAlpha=.25;x.beginPath();x.moveTo(cx,cy);x.arc(cx,cy,R,-Math.PI/2+v*2*Math.PI,1.5*Math.PI);x.fill();x.globalAlpha=1;return}
+ if(S.chart==="Bar"){P.forEach(function(p){x.fillRect(p[0]-3,p[1],6,H-p[1])});return}
+ if(S.chart==="Scatter"){P.forEach(function(p){x.beginPath();x.arc(p[0],p[1],4,0,7);x.fill()});return}
+ x.beginPath();P.forEach(function(p,i){i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1])});x.stroke();
+ if(S.chart==="Area"){x.lineTo(P[P.length-1][0],H);x.lineTo(P[0][0],H);x.closePath();x.globalAlpha=.25;x.fill();x.globalAlpha=1}})}
+function start(){stop();tick();bat();timer=setInterval(tick,S.interval)}
+function stop(){if(timer){clearInterval(timer);timer=null}}
+loadLang();load();apply();applyLang();if(lang)show($("auth"),true);else show($("langScreen"),true);window.__nexa={S:function(){return S},H:function(){return hist.cpu.length}};
+})();
+</script>
+<script>if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
+</body>
+</html>
